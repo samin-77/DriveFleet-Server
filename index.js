@@ -239,7 +239,7 @@ async function run() {
     });
 
     // ============ BOOKINGS APIs ============
-    // POST /api/bookings - Create a new booking (private)
+    // POST /api/bookings - Create booking with validation and $inc booking count
     app.post('/api/bookings', verifyToken, async (req, res) => {
       const { carId, driverNeeded, specialNote, bookingDate, totalPrice } = req.body;
       if (!carId || !totalPrice) {

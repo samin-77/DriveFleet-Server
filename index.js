@@ -48,7 +48,7 @@ async function run() {
     const bookingsCollection = db.collection('bookings');
     const usersCollection = db.collection('users');
 
-    // JWT Middleware
+    // JWT Middleware - Verifies HTTPOnly cookie token
     const verifyToken = (req, res, next) => {
       const token = req.cookies?.token;
       if (!token) {

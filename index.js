@@ -64,9 +64,12 @@ async function run() {
     };
 
     // ============ AUTH APIs ============
-    // POST /api/auth/signup - Register a new user account
+    // POST /api/auth/signup - Register a new user account with validation
     app.post('/api/auth/signup', async (req, res) => {
       const { name, email, photoURL, password } = req.body;
+      if (!name || !email || !password) {
+        return res.status(400).send({ message: 'Name, email, and password are required' });
+      }
       const existing = await usersCollection.findOne({ email });
       if (existing) {
         return res.status(400).send({ message: 'User already exists' });

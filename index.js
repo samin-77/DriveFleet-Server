@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
+// Initialize Express application
 const app = express();
 const port = process.env.PORT || 5000;
 

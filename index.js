@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { MongoClient, ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
@@ -8,15 +10,22 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 
 dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174', 'https://drivefleet-client.vercel.app'],
+  origin: ['http://localhost:5173', 'http://localhost:5174', 'https://drivefleet-client.vercel.app', 'https://*.loca.lt'],
   credentials: true,
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
+
+// Serve static client build
+const clientDist = path.join(__dirname, '..', 'client', 'dist');
+app.use(express.static(clientDist));
 
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} | ${req.method} ${req.path}`);
@@ -215,6 +224,13 @@ async function run() {
 
     app.get('/', (req, res) => {
       res.send('DriveFleet API is running');
+    });
+
+    // SPA fallback - serve index.html for any non-API route
+    app.get('*', (req, res) => {
+      if (!req.path.startsWith('/api')) {
+        res.sendFile(path.join(clientDist, 'index.html'));
+      }
     });
 
   } catch (err) {

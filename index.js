@@ -81,6 +81,7 @@ async function run() {
       res.send({ message: 'User created', insertedId: result.insertedId });
     });
 
+    // POST /api/auth/login - Authenticate user and set JWT cookie
     app.post('/api/auth/login', async (req, res) => {
       const { email, password } = req.body;
       const user = await usersCollection.findOne({ email });
@@ -101,6 +102,7 @@ async function run() {
       });
     });
 
+    // POST /api/auth/google - Google OAuth login/signup
     app.post('/api/auth/google', async (req, res) => {
       const { name, email, photoURL } = req.body;
       const existing = await usersCollection.findOne({ email });
@@ -129,10 +131,12 @@ async function run() {
       });
     });
 
+    // POST /api/auth/logout - Clear JWT cookie
     app.post('/api/auth/logout', async (req, res) => {
       res.clearCookie('token', cookieOptions).send({ message: 'Logged out' });
     });
 
+    // GET /api/auth/me - Get current authenticated user
     app.get('/api/auth/me', verifyToken, async (req, res) => {
       const user = await usersCollection.findOne(
         { email: req.user.email },

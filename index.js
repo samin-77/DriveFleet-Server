@@ -273,6 +273,7 @@ async function run() {
       res.send(result);
     });
 
+    // GET /api/my-bookings - Get user bookings with car data enrichment
     app.get('/api/my-bookings', verifyToken, async (req, res) => {
       const bookings = await bookingsCollection
         .find({ userEmail: req.user.email })
